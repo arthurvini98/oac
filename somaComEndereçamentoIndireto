@@ -1,0 +1,51 @@
+.data
+entradas: .space 12   # Espaço para armazenar 3 valores (cada um com 4 bytes)
+num1: .asciiz "Digite o primeiro numero para somar: "
+num2: .asciiz "Digite o segundo numero para somar: "
+num3: .asciiz "Digite o terceiro numero para somar: "
+
+.text
+main:
+    la $t0, entradas   # Carrega o endereço base para os valores de entrada em $t0
+
+    # Recebe três valores do usuário e os armazena no array "input_values"
+    li $v0, 4
+    la $a0, num1
+    syscall
+    
+    li $v0, 5             # Código da syscall para ler int
+    syscall               # Lê o primeiro valor e armazena em $v0
+    sw $v0, 0($t0)        # Armazena no endereço base
+
+    li $v0, 4
+    la $a0, num2
+    syscall
+    
+    li $v0, 5             # Lê o segundo valor
+    syscall
+    sw $v0, 4($t0)        # Armazena no endereço base + 4
+
+    li $v0, 4
+    la $a0, num3
+    syscall
+    
+    li $v0, 5             # Lê o terceiro valor
+    syscall
+    sw $v0, 8($t0)        # Armazena no endereço base + 8
+
+    # Soma os três valores usando endereçamento indireto
+    lw $t1, 0($t0)        # Carrega o primeiro valor
+    lw $t2, 4($t0)        # Carrega o segundo valor
+    lw $t3, 8($t0)        # Carrega o terceiro valor
+
+    add $t4, $t1, $t2     # Soma primeiro e segundo valores
+    add $t4, $t4, $t3     # Soma resultado anterior com o terceiro valor
+
+    # Imprime o resultado da soma
+    li $v0, 1             # Código da syscall para imprimir int
+    move $a0, $t4         # Move o valor da soma para o argumento $a0
+    syscall
+
+    # Finaliza o programa
+    li $v0, 10            # Código da syscall para encerrar o programa
+    syscall

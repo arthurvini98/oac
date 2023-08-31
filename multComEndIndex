@@ -1,0 +1,42 @@
+.data
+result: .word 0
+num1: .asciiz "Digite o primeiro numero para subtrair: "
+num2: .asciiz "Digite o segundo número para subtrair: "
+resul: .asciiz "O resultado da subtração é: "
+
+.text
+main:
+    la $t0, result      # Carrega o endereço da variável result em $t0
+	
+    li $v0, 4
+    la $a0, num1
+    syscall
+    
+    # Recebe o primeiro valor do usuário
+    li $v0, 5           # Código da syscall para ler int
+    syscall             # Lê o valor e armazena em $v0
+    sw $v0, 0($t0)      # Armazena o valor no endereço da variável result
+
+    li $v0, 4
+    la $a0, num2
+    syscall
+    
+    # Recebe o segundo valor do usuário
+    li $v0, 5           # Código da syscall para ler int
+    syscall             # Lê o valor e armazena em $v0
+    lw $t1, 0($t0)      # Carrega o primeiro valor do endereço da variável result
+    sub $t1, $t1, $v0   # Subtrai o segundo valor do primeiro valor
+    sw $t1, 0($t0)      # Armazena o resultado no endereço da variável result
+
+    li $v0, 4
+    la $a0, resul
+    syscall
+
+    # Imprime o resultado
+    li $v0, 1           # Código da syscall para imprimir int
+    lw $a0, 0($t0)      # Carrega o valor do resultado para o argumento $a0
+    syscall
+
+    # Finaliza o programa
+    li $v0, 10          # Código da syscall para encerrar o programa
+    syscall
